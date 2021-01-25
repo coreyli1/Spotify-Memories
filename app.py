@@ -30,8 +30,6 @@ auth_query_parameters = {
     "response_type": "code",
     "redirect_uri": REDIRECT_URI,
     "scope": SCOPE,
-    # "state": STATE,
-    # "show_dialog": SHOW_DIALOG_str,
     "client_id": CLIENT_ID
 }
 
@@ -44,6 +42,7 @@ def index():
 def auth():
     url_args = "&".join(["{}={}".format(key, quote(val)) for key, val in auth_query_parameters.items()])
     auth_url = "{}/?{}".format(SPOTIFY_AUTH_URL, url_args)
+    print(auth_url)
     return redirect(auth_url)
 
 @app.route("/callback/q")
@@ -75,12 +74,12 @@ def callback():
     # Auth Step 6: Use the access token to access Spotify API
     authorization_header = {"Authorization": "Bearer {}".format(access_token)}
 
-    # Get profile data
+    # Get recently played
     user_profile_api_endpoint = "{}/me/player/recently-played?limit=50".format(SPOTIFY_API_URL)
     profile_response = requests.get(user_profile_api_endpoint, headers=authorization_header)
     profile_data = json.loads(profile_response.text)
 
-    print(profile_data['items'])
+    # print(profile_data['items'])
 
 
     #return redirect('/checklist') 
