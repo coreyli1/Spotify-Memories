@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="">
+        <h1>Make your Memories</h1>
+        <label for="name">Playlist Name:</label>
+        <input type="text" id="name" name="name" >
+        <br/>
+        
+        {% for item in pd %}
+        
+            <img src="{{item['track']['album']['images'][2]['url']}}"/>
+            {% set album = item['track']['album']['id'] %}
+            <label for="{{album}}">{{item['track']['name']}} by {{item['track']['artists'][0]['name']}}</label>          
+            <input type="checkbox" id="{{album}}" name="{{album}}" value="{{album}}"><br/>
+
+            
+        {% endfor %}        
+    </form>
+
+</body>
+</html>
+
+
+  

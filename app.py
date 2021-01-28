@@ -83,7 +83,7 @@ def callback():
 
 
     #return redirect('/checklist') 
-    return render_template("test.html", pd=profile_data['items'])
+    return render_template("checklist.html", pd=profile_data['items'])
 
 
 
