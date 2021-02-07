@@ -1,0 +1,38 @@
+Creating a playlist + posting songs to the playlist
+
+import requests 
+import json
+
+# Spotify URLS
+SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize"
+SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
+SPOTIFY_API_BASE_URL = "https://api.spotify.com"
+API_VERSION = "v1"
+SPOTIFY_API_URL = "{}/{}".format(SPOTIFY_API_BASE_URL, API_VERSION)
+
+## NOTES:
+## Data to add playlist should come from webpage, not from database, but data should be stored in data base (Date, Name, Songs)
+
+##Pull the user's id
+user_profile_api_endpoint = "{}/me".format(SPOTIFY_API_URL)
+user_profile_response = requests.get(user_profile_api_endpoint, headers=authorization_header)
+user_profile_data = json.loads(user_profile_response.text)
+user_id = user_profile_data['id']
+
+##POST request to make a private playlist
+playslist_api_endpoint = "{}/users/{user_id}/playlists".format(SPOTIFY_API_URL)
+request_body = json.dumps{
+    "name": "ADD NAME FIELD ON WEBSITE",
+    "description": "ADD DESCRIPTION FIELD ON WEBSITE",
+    "public": False
+}
+
+##POST reuest to push songs to the playlist
+response = requests.post(url = playslist_api_endpoint, data = request_body, headers={"Content-Type":"application/json", authorization_header})
+playlist_id = response.json()['id']
+add_tracks_api_endpoint = "{}/playlists/{playlist_id}/tracks".format(SPOTIFY_API_URL)
+request_body = json.dumps({
+          "uris" : uris //make sure to pull uris from checklist
+        })
+response = requests.post(url = endpoint_url, data = request_body, headers={"Content-Type":"application/json", 
+                        authorization_header})
