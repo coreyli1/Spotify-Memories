@@ -4,6 +4,7 @@ import requests
 import json
 
 app = Flask(__name__)
+app.secret_key = b'\xb5\xf0>npXE+\x96%\xa62\xc1b\x10\xde'
 
 
 # Spotify URLS
@@ -42,10 +43,9 @@ def index():
 def auth():
     url_args = "&".join(["{}={}".format(key, quote(val)) for key, val in auth_query_parameters.items()])
     auth_url = "{}/?{}".format(SPOTIFY_AUTH_URL, url_args)
-    print(auth_url)
     return redirect(auth_url)
 
-@app.route("/callback/q", methods = ['GET', 'POST'])
+@app.route("/callback/q")
 def callback():
     # Auth Step 4: Requests refresh and access tokens
 
@@ -71,51 +71,37 @@ def callback():
     token_type = response_data["token_type"]
     expires_in = response_data["expires_in"]
 
+    
     # Auth Step 6: Use the access token to access Spotify API
     authorization_header = {"Authorization": "Bearer {}".format(access_token)}
 
     # Get recently played
-    user_profile_api_endpoint = "{}/me/player/recently-played?limit=50".format(SPOTIFY_API_URL)
+    user_profile_api_endpoint = "{}/me".format(SPOTIFY_API_URL)
     profile_response = requests.get(user_profile_api_endpoint, headers=authorization_header)
     profile_data = json.loads(profile_response.text)
 
-    # print(profile_data['items'])
+    session['access_token'] = access_token
+    session['profile_data'] = profile_data
 
-    #return redirect('/checklist') 
-    if request.method == 'POST':
-        name = request.form.get('name')
-        description = request.form.get('description')
-        return redirect(url_for('confirmation', name=name, description=description))
+
+
+
+    return redirect('/checklist') 
     
-    return render_template("checklist.html", pd=profile_data['items'])
+
+@app.route("/checklist")
+def checklist():
+
+    access_token = session['access_token']
+    authorization_header = {"Authorization": "Bearer {}".format(access_token)}
+
+    user_playlist_api_endpoint = "{}/me/player/recently-played?limit=50".format(SPOTIFY_API_URL)
+    playlist_response = requests.get(user_playlist_api_endpoint, headers=authorization_header)
+    playlist_data = json.loads(playlist_response.text)
+
+    return render_template("checklist.html", pd=playlist_data['items'])
 
 
-@app.route("/confirmation")
-def confirmation():
-    user_profile_api_endpoint = "{}/me".format(SPOTIFY_API_URL)
-    user_profile_response = requests.get(user_profile_api_endpoint, headers=authorization_header)
-    user_profile_data = json.loads(user_profile_response.text)
-    user_id = user_profile_data['id']
-
-    ##POST request to make a private playlist
-    playslist_api_endpoint = "{}/users/{user_id}/playlists".format(SPOTIFY_API_URL)
-    request_body = json.dumps({
-        "name": name,
-        "description": description,
-        "public": False
-    })
-
-    ##POST reuest to push songs to the playlist
-    response = requests.post(url = playslist_api_endpoint, data = request_body, headers={"Content-Type":"application/json", authorization_header})
-    playlist_id = response.json()['id']
-    add_tracks_api_endpoint = "{}/playlists/{playlist_id}/tracks".format(SPOTIFY_API_URL)
-    request_body = json.dumps({
-            "uris" : uris //make sure to pull uris from checklist
-            })
-    response = requests.post(url = endpoint_url, data = request_body, headers={"Content-Type":"application/json", authorization_header})
-
-
-    return render_template("confirmation.html", name=name, playlist_id=playlist_id)
 
 if __name__ == "__main__":
     app.run(debug=True) 
