@@ -80,7 +80,6 @@ def callback():
     profile_data = json.loads(profile_response.text)
 
     # print(profile_data['items'])
-<<<<<<< HEAD
 
     #return redirect('/checklist') 
     if request.method == 'POST':
@@ -88,11 +87,6 @@ def callback():
         description = request.form.get('description')
         return redirect(url_for('confirmation', name=name, description=description))
     
-=======
-
-
-    #return redirect('/checklist') 
->>>>>>> parent of 25ffa3f (implemented session and changed routes so now you can refresh without getting an access token error!)
     return render_template("checklist.html", pd=profile_data['items'])
 
 
