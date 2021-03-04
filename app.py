@@ -96,10 +96,41 @@ def checklist():
         songs = result[2:len(result)-1]
         name = result[0]
         description = result[1]
+        user_id = session['profile_data']['id']
 
-        print(songs, name, description)
+        create_playlist_endpoint = f"{SPOTIFY_API_URL}/users/{user_id}/playlists"
+
+        new_playlist_response = requests.post(
+            create_playlist_endpoint,
+            headers=authorization_header,
+            json={
+                'name': name,
+                'description': description,
+                'public': False
+            }
+            )
+        new_playlist_data = json.loads(new_playlist_response.text)
+
+        playlist_id = new_playlist_data['uri'][17:]
+        uris = ''
+        for uri in songs:
+            uris += f"{uri}%2C"
+        add_to_playlist_endpoint = f"{SPOTIFY_API_URL}/playlists/{playlist_id}/tracks?uris={uris}"
+        print(add_to_playlist_endpoint)
+        add_to_playlist_response = requests.post(
+            add_to_playlist_endpoint,
+            headers=authorization_header
+            )
+        add_to_playlist_data = json.loads(add_to_playlist_response.text)
+        print(add_to_playlist_data)
+        return render_template("confirmation.html",playlist=f"https://open.spotify.com/playlist/{playlist_id}")
 
     return render_template("checklist.html", pd=playlist_data['items'])
+
+# @app.route("/confirmation")
+# def confirmation():
+#     return render_template("confirmation.html", sg=songs, na=name, desc=description)
+
 
 
 if __name__ == "__main__":

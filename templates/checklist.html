@@ -16,10 +16,10 @@
         {% for item in pd %}
         
             <img src="{{item['track']['album']['images'][2]['url']}}"/>
-            {% set album = item['track']['album']['id'] %}
+            {% set uri = item['track']['uri'] %}
             {% set name = item['track']['name'] %}
             <label for="{{name}}">{{item['track']['name']}} by {{item['track']['artists'][0]['name']}}</label>          
-            <input type="checkbox" id="{{name}}" name="{{name}}" value="{{album}}"><br/>
+            <input type="checkbox" id="{{name}}" name="{{name}}" value="{{uri}}"><br/>
 
             
         {% endfor %}
