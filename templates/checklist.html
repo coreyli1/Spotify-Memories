@@ -3,26 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Checklist</title>
+    <link rel="stylesheet" type=text/css href='{{ url_for('static', filename='styles.css') }}' />
 </head>
 <body>
+    
     <form action="/checklist" method="POST" >
-        <h1>Make your Memories</h1>
-        <label for="name">Playlist Name:</label>
-        <input type="text" id="name" name="name" >
-        <label for="description">Description:</label>
-        <input type="text" id="description" name="description" >
+        <div class="checklist-top">
+            <h1>Make your Memories</h1>
+            <label for="name">Playlist Name:</label>
+            <input type="text" id="name" name="name" >
+            </br>
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description" >            
+        </div>
+
         <br/>
+        <div class="tracks">
         {% for item in pd %}
-        
-            <img src="{{item['track']['album']['images'][2]['url']}}"/>
-            {% set uri = item['track']['uri'] %}
-            {% set name = item['track']['name'] %}
-            <label for="{{name}}">{{item['track']['name']}} by {{item['track']['artists'][0]['name']}}</label>          
-            <input type="checkbox" id="{{name}}" name="{{name}}" value="{{uri}}"><br/>
+            <div class="track">
+                <img src="{{item['track']['album']['images'][1]['url']}}"/>
+                {% set uri = item['track']['uri'] %}
+                {% set name = item['track']['name'] %}
+                <label for="{{name}}">{{item['track']['name']}} by {{item['track']['artists'][0]['name']}}</label>          
+                <input class="check" type="checkbox" id="{{name}}" name="{{name}}" value="{{uri}}"><br/>
+            </div>
+
 
             
-        {% endfor %}
+        {% endfor %}            
+        </div>
+
         <input type="submit" id="submit" name="submit" value="Lets get started!">        
     </form>
 
