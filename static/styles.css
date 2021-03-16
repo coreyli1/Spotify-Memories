@@ -1,3 +1,13 @@
+/* Home page stylings */
+.home {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+
+/* Checklist stylings */
 .checklist-top {
     text-align: center;
 }
@@ -11,8 +21,22 @@
     display: flex;
     align-items: center;
     flex-direction: column;
+
+    max-width: 20%;
 }
 
 input.check {
     transform: scale(1.25);
+}
+
+.submit {
+    text-align: center;
+}
+
+/* Confirmation stylings */
+.confirmation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
